@@ -1,0 +1,23 @@
+{
+  "template": "https://github.com/markusritschel/cookiecutter-pysci-project",
+  "commit": "9c9f901da14532d1fcbabb33cb9dd4f884a90603",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "project_author": "Markus Ritschel",
+      "email": "git@markusritschel.de",
+      "github_username": "markusritschel",
+      "project_name": "Bayesian evaluation of climate simulations",
+      "project_slug": "bayes-climsim-eval",
+      "project_description": "Evaluation of climate model simulations (e.g. from CMIP) with a Bayesian approach",
+      "project_version": "0.1.0",
+      "project_license": "MIT license",
+      "sphinx_theme": "pydata_sphinx_theme",
+      "_copy_without_render": [
+        ".github/workflows/*"
+      ],
+      "_template": "https://github.com/markusritschel/cookiecutter-pysci-project"
+    }
+  },
+  "directory": null
+}
