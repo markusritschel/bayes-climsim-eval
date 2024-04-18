@@ -30,7 +30,7 @@ load_dotenv(dotenv_path)
 sys.path.append(str(BASE_DIR/"scripts"))
 
 
-def setup_logger(level=None, logfile=True):
+def setup_logger(level=None, logfile=True, name='root'):
     """Define a logger setup with
     - 1x fileHandler: writing log files to LOG_DIR (logfile can be boolean or a file path)
     - 1x streamHandler: streaming logs to terminal
@@ -54,10 +54,11 @@ def setup_logger(level=None, logfile=True):
 
     if not level:
         level = os.getenv('LOGLEVEL', 'INFO').upper()
+    print("LOGLEVEL:", level)
 
-    # set up new logger and set level
-    logger = logging.getLogger()
-    logger.setLevel(level)
+    # set up new logger and set level to DEBUG to ensure all messages are written to the log file
+    logger = logging.getLogger(name)
+    logger.setLevel('DEBUG')
 
     formatter = logging.Formatter('%(asctime)s: '
                                   '[%(levelname)s] '
@@ -65,6 +66,7 @@ def setup_logger(level=None, logfile=True):
                                   '(%(name)s:#%(lineno)d): '
                                   '%(message)s'
                                   , datefmt='%Y-%m-%d %H:%M:%S')
+
     if logfile:
         if isinstance(logfile, bool):
             logfile = LOG_DIR / f'{caller_filename}_{os.getpid()}.log'
@@ -72,23 +74,25 @@ def setup_logger(level=None, logfile=True):
             logdir = Path(logfile).parents[0]
             if not logdir.exists():
                 raise IOError(f'Log directory {logdir} does not exist.')
-        fh = logging.FileHandler(logfile)
-        fh.setFormatter(formatter)
-        fh.setLevel(level)
-        logger.addHandler(fh)
         logger.logfile = logfile.as_posix()
+        print(f"Log file: {logger.logfile}")
+        
+        file_handler = logging.FileHandler(logfile)
+        file_handler.setFormatter(formatter)
+        file_handler.setLevel('DEBUG')
+        logger.addHandler(file_handler)
     else:
         logger.logfile = None
 
-    ch = logging.StreamHandler()
-    ch.setFormatter(formatter)
-    logger.addHandler(ch)
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(formatter)
+    stream_handler.setLevel(level)
+    logger.addHandler(stream_handler)
 
-#     logger.info("="*(17+len(caller_file)))
-#     logger.info("Calling routine: %s", caller_file)
-#     if logfile:
-#         logger.info("Log file: %s", logfile)
-#     logger.info("-"*(17+len(caller_file))+"\n")
+    # rel_caller_file = Path(caller_file).relative_to(BASE_DIR).as_posix()
+    # logger.info("="*(17+len(rel_caller_file)))
+    # logger.info("Calling routine: %s", rel_caller_file)
+    # logger.info("-"*(17+len(rel_caller_file))+"\n")
 
     return logger
 
