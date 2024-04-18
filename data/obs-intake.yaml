@@ -1,0 +1,24 @@
+# This yaml file provides a multitude of observational data sources that can be read in via intake.
+# Open the catalog via intake.open_catalog('./obs-intake.yml').
+# list(cat) will give you a list of the available entries.
+
+plugins:
+  source:
+      - module: intake_xarray
+
+sources:
+  HadCRUT5:
+    driver: netcdf
+    description: HadCRUT Surface (Air) Temperature Anomalies
+    metadata:
+      url_origin: http://icdc.cen.uni-hamburg.de/1/daten/atmosphere/crutem-and-hadcrut.html
+    parameters:
+      out:
+        description: type of output
+        type: str
+        default: anomalies.ensemble_mean
+        allowed: [weights, anomalies.ensemble_mean]
+    args:
+      urlpath: /pool/data/ICDC/atmosphere/hadcrut/DATA/HadCRUT.5.0.2.0.analysis.{{out}}.nc
+      xarray_kwargs:
+        drop_variables: [field_status, unspecified]
