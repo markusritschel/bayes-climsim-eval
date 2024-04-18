@@ -9,6 +9,7 @@ $ python scripts/02_plot-timeseries.py <TYPE>
 with <TYPE> being one out of the following options:
 - member_overview <EXPERIMENT_ID>
 - raw
+- filtered
 """
 import fire
 from datetime import datetime
@@ -17,6 +18,8 @@ import pandas as pd
 import xarray as xr
 import matplotlib.pyplot as plt
 from my_code_base.stats.timeseries import weighted_annual_mean
+from my_code_base.linalg import inv
+from src.data_projection import legendre_polynomials
 from src import *
 
 log = setup_logger()
@@ -89,10 +92,48 @@ def plot_raw_timeseries():
     plt.savefig(PLOT_DIR/f"timeseries_scenarios.png")
 
 
+def plot_filtered_timeseries():
+    colors = {
+        'historical': 'dodgerblue',
+        'historicalGHG': 'crimson',
+        'historicalNat': 'g',
+        'piControl': 'grey'
+    }
+
+    fig, axes = plt.subplots(2, 2, figsize=(12,7), sharey=True)
+
+    experiment_ids = ['historical', 'historicalNat', 'historicalGHG', 'piControl']
+    for experiment_id, ax in zip(experiment_ids, axes.flatten()):
+        ds = xr.open_dataset(DATA_DIR/f"processed/{experiment_id}_ensemble_1880-2005.nc")
+        X = weighted_annual_mean(ds).tas
+        color = colors[experiment_id]
+
+        G = legendre_polynomials(degrees=13, index=X.time.values)
+        P = inv(G.T.dot(G)).dot(G.T)
+        X = G.dot(P).dot(X)
+
+
+        ax.axhline(0, c='k', lw=.5, zorder=0)
+        X.plot(ax=ax, c='.4', alpha=.3, lw=1, legend=False, zorder=0)
+        X.mean(axis=1).plot(c=color, lw=3, ax=ax)
+
+        ax.text(0.03, .05, experiment_id, va='bottom', transform=ax.transAxes)
+        ax.set_title('')
+        ax.set_xlabel('')
+        ax.set_ylabel('')
+
+        sns.despine()
+
+    fig.supylabel('Temperature anomalies [K]')
+    fig.supxlabel('Time (year)')
+    plt.tight_layout()
+    plt.savefig(PLOT_DIR/f"timeseries_filtered_scenarios.png")
+
 
 
 if __name__ == '__main__':
     fire.Fire({
         'member_overview': plot_all_member,
         'raw': plot_raw_timeseries, 
+        'filtered': plot_filtered_timeseries,
     })
