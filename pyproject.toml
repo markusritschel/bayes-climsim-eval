@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools @ git+https://github.com/pypa/setuptools.git@main"]
+
+
+[project]
+name = "src"
+description = "Evaluation of climate model simulations (e.g. from CMIP) with a Bayesian approach"
+authors = [
+  {name = "Markus Ritschel", email = "git@markusritschel.de"},
+]
+readme = "README.md"
+license = {file = "LICENSE"}
+dynamic = ["version"]
+requires-python = ">= 3.12"
+
+
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = [
+    "tests",
+    "src",
+]
+addopts = [
+    "--import-mode=importlib",
+    "-ra -q"
+]
+
+
+[tool.flake8]
+max-line-length = 80
+max-complexity = 10
