@@ -45,3 +45,8 @@ class TestBayesEval:
     def bayes_eval(self):
         return BayesEval()
 
+    def test_add(self, bayes_eval):
+        bayes_eval.add(self.datasets)
+        assert bayes_eval._original_data.keys() == self.datasets.keys(), "Dictionary keys don't match"
+        assert bayes_eval._original_data == self.datasets, "Dictionaries don't match"
+
