@@ -85,3 +85,21 @@ class BayesEval:
         mrv = self._distributions[scenario_id]
         likelihood = mrv.pdf
         return likelihood(self._pos)
+
+    def get_decision_probability(self, scenario_id, **kwargs):
+        """Return the decision probability (posteriori) for a given scenario.
+        Evaluated on a grid.
+
+        Parameters
+        ----------
+        likelihoods : dict
+        scenario_id : str
+        x : np.ndarray
+        """
+        self._calculate_grid_extent()
+        if self._pos is None:
+            self._calculate_grid_extent(**kwargs)
+        N = len(self._distributions)
+        r = self._calculate_norm_factor()
+        likelihood = self._distributions[scenario_id].pdf
+        return likelihood(self._pos) / (N * r)
