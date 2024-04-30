@@ -50,3 +50,13 @@ class TestBayesEval:
         assert bayes_eval._original_data.keys() == self.datasets.keys(), "Dictionary keys don't match"
         assert bayes_eval._original_data == self.datasets, "Dictionaries don't match"
 
+    @pytest.mark.parametrize("degrees", [2,3,4,5])
+    def test_projection(self, bayes_eval, degrees):
+        G = legendre_polynomials(degrees=degrees, length=100)
+        bayes_eval.add(self.datasets)
+        bayes_eval.project_onto(G)
+        assert bayes_eval._projected_data.keys() == self.datasets.keys()
+        for id in self.datasets.keys():
+            projected_dataset = bayes_eval._projected_data[id]
+            assert projected_dataset.shape == (G.shape[1], self.datasets[id].shape[1])
+
