@@ -72,3 +72,21 @@ class TestBayesEval:
             assert dist.mean.shape == (G.shape[1],)
             assert dist.cov.shape == (G.shape[1], G.shape[1])
 
+    @pytest.mark.parametrize("degrees", [(0,1), 2, 3, 4, np.arange(5)])
+    def test_gdf_with_obs_cov(self, bayes_eval, degrees):
+        G = legendre_polynomials(degrees=degrees, length=100)
+        bayes_eval.add(self.datasets)
+        bayes_eval.project_onto(G)
+        # create an invertible matrix
+        n = G.shape[1]
+        Σ_obs = np.random.rand(n, n)
+        diag = np.sum(np.abs(Σ_obs), axis=1)
+        np.fill_diagonal(Σ_obs, diag)
+        bayes_eval.obs_uncertainty = Σ_obs
+        bayes_eval.gdf()
+        for id in self.datasets.keys():
+            dist = bayes_eval._distributions[id]
+            assert isinstance(dist, scipy.stats._multivariate.multivariate_normal_frozen)
+            assert dist.mean.shape == (G.shape[1],)
+            assert dist.cov.shape == (G.shape[1], G.shape[1])
+
