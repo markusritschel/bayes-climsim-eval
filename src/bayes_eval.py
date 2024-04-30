@@ -9,6 +9,7 @@ from my_code_base.linalg import inv, empirical_covariance
 import numpy as np
 from scipy.stats import multivariate_normal
 
+from src.bayes import calculate_axis_extent
 
 log = logging.getLogger(__name__)
 
@@ -20,6 +21,8 @@ class BayesEval:
         self._projected_data = {}
         self._distributions = {}
         self._obs_cov = np.array(0)
+        self.grid = None
+        self._pos = None
 
     def add(self, *args, **kwargs):
         if args and isinstance(args[0], dict):
@@ -57,4 +60,17 @@ class BayesEval:
         if np.any(self._obs_cov):
             print("Warning: Observation uncertainty already exists.")
         self._obs_cov = Σ_obs
+
+    def _calculate_grid_extent(self, **kwargs):
+        rv_dict = {}
+        for k, x in self._projected_data.items():
+            µ = np.mean(x, axis=1)
+            Σ = empirical_covariance(x)
+            if µ.size > 2:
+                raise ValueError("Cannot calculate grid extent for dimensions higher than 2.")
+            rv_dict[k] = multivariate_normal(mean=µ, cov=Σ + self._obs_cov)
+
+        minmax_df = calculate_axis_extent(rv_dict, **kwargs)
+        self.grid = np.mgrid[[slice(min_,max_,500j) for (min_,max_) in minmax_df.values]]
+        self._pos = np.dstack(self.grid)
 
