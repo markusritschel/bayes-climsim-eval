@@ -19,6 +19,7 @@ class BayesEval:
         self._original_data = {}
         self._projected_data = {}
         self._distributions = {}
+        self._obs_cov = np.array(0)
 
     def add(self, *args, **kwargs):
         if args and isinstance(args[0], dict):
@@ -38,7 +39,7 @@ class BayesEval:
         parameters = {
             id: {
                 'µ': np.mean(x, axis=1),
-                'Σ': empirical_covariance(x)
+                'Σ': empirical_covariance(x) + self._obs_cov
             }
             for (id,x) in self._projected_data.items()
         }
@@ -46,4 +47,14 @@ class BayesEval:
             id: multivariate_normal(mean=params['µ'], cov=params['Σ'])
             for (id, params) in parameters.items()
         }
+
+    @property
+    def obs_uncertainty(self):
+        return self._obs_cov
+    
+    @obs_uncertainty.setter
+    def obs_uncertainty(self, Σ_obs):
+        if np.any(self._obs_cov):
+            print("Warning: Observation uncertainty already exists.")
+        self._obs_cov = Σ_obs
 
