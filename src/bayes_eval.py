@@ -4,6 +4,7 @@
 # Date:   2024-04-28
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #
+from functools import cache
 import logging
 from my_code_base.linalg import inv, empirical_covariance
 import numpy as np
@@ -78,6 +79,13 @@ class BayesEval:
         self.x = self.grid[0][:, 0]
         self.y = self.grid[1][0, :]
         self._pos = np.dstack(self.grid)
+
+    @cache
+    def _calculate_norm_factor(self):
+        print("Calculating norm factor")
+        all_pdfs = [rv.pdf(self._pos) for rv in self._distributions.values()]
+        r = np.dstack(all_pdfs) / len(self._distributions)
+        return r.sum(axis=2)
 
     def get_likelihood(self, scenario_id):
         """Evaluated on a grid"""
