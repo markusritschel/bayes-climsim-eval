@@ -10,6 +10,7 @@ import pandas as pd
 import pytest
 from scipy.stats import multivariate_normal
 from src.bayes import calculate_axis_extent
+from src.bayes_eval import BayesEval
 
 
 def test_calculate_axis_extent_2d():
@@ -32,3 +33,15 @@ def test_calculate_extent_1d():
     expected = pd.DataFrame({'min': (-7.,), 
                              'max': (+8.,)})
     assert np.all(x_extent == expected)
+
+
+class TestBayesEval:
+    datasets = {
+        'scenarioA': pd.DataFrame(np.random.rand(100,10), columns=[f"mem{x}" for x in np.arange(1, 11)]),
+        'scenarioB': pd.DataFrame(np.random.rand(100,10), columns=[f"mem{x}" for x in np.arange(1, 11)])
+    }
+
+    @pytest.fixture
+    def bayes_eval(self):
+        return BayesEval()
+
