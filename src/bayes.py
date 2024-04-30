@@ -66,5 +66,30 @@ def find_decision_surfaces(pdf_list):
     return decision_surfaces
 
 
+def find_decision_bnds(pdf_list) -> pd.DataFrame:
+    """Find the decision boundaries based on a list of probability density functions (PDFs).
 
+    Parameters
+    ----------
+    pdf_list: list
+        A list of probability density functions.
 
+    Returns
+    -------
+    pd.DataFrame
+        A DataFrame containing the start and end indices of each group of decision boundaries, 
+        along with an identifier for each group (column names: [start, end, id]).
+    """
+    masked_array = find_decision_surfaces(pdf_list)
+    # Find the indices where the array changes
+    indices = np.where(np.diff(masked_array) != 0)[0] + 1
+    # Add the start and end indices
+    indices = np.r_[0, indices, masked_array.size - 1]
+    # Create pairs of indices representing the start and end of each group
+    groups = np.array(
+        [
+            (start, end, masked_array[start])
+            for start, end in zip(indices[:-1], indices[1:])
+        ]
+    )
+    return pd.DataFrame(groups, columns=["start", "end", "id"])
