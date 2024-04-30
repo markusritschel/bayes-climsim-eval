@@ -79,3 +79,9 @@ class BayesEval:
         self.y = self.grid[1][0, :]
         self._pos = np.dstack(self.grid)
 
+    def get_likelihood(self, scenario_id):
+        """Evaluated on a grid"""
+        self._calculate_grid_extent()
+        mrv = self._distributions[scenario_id]
+        likelihood = mrv.pdf
+        return likelihood(self._pos)
