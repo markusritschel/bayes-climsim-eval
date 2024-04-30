@@ -41,3 +41,30 @@ def calculate_axis_extent(rv_dict, factor=2.5):
     extents['min'] = {k: np.min(v) for k, v in extents['min'].items()}
 
     return pd.DataFrame.from_dict(extents)
+
+
+def find_decision_surfaces(pdf_list):
+    """Find the decision surfaces based on a list of probability density functions.
+    Mask values that are smaller than the difference between 1.0 and the next smallest 
+    representable float larger than 1.0 (numpy.finfo(np.float64).eps).
+
+    Parameters
+    ----------
+    pdf_list : list
+        A list of probability density functions.
+
+    Returns
+    -------
+    decision_surfaces : numpy.ndarray
+        An array containing the decision surfaces, identified by integer.
+    """
+    pdfs_stacked = np.dstack(list(pdf_list)).squeeze()
+    decision_surfaces = np.nanargmax(pdfs_stacked, axis=-1)
+
+    eps_mask = np.all(pdfs_stacked < np.finfo(np.float64).eps, axis=-1)
+    decision_surfaces = np.ma.masked_where(eps_mask, decision_surfaces)
+    return decision_surfaces
+
+
+
+
