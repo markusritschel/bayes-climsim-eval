@@ -75,5 +75,7 @@ class BayesEval:
 
         minmax_df = calculate_axis_extent(rv_dict, **kwargs)
         self.grid = np.mgrid[[slice(min_,max_,500j) for (min_,max_) in minmax_df.values]]
+        self.x = self.grid[0][:, 0]
+        self.y = self.grid[1][0, :]
         self._pos = np.dstack(self.grid)
 
