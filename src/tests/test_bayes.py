@@ -90,3 +90,19 @@ class TestBayesEval:
             assert dist.mean.shape == (G.shape[1],)
             assert dist.cov.shape == (G.shape[1], G.shape[1])
 
+    @pytest.mark.parametrize(
+        "degrees,expected_behavior",
+        [
+            ((0, 1),       does_not_raise()),
+            (2,            does_not_raise()),
+            (3,            pytest.raises(ValueError)),
+            (4,            pytest.raises(ValueError)),
+            (np.arange(5), pytest.raises(ValueError)),
+        ],
+    )
+    def test_calculate_grid_extent(self, bayes_eval, degrees, expected_behavior):
+        G = legendre_polynomials(degrees=degrees, length=100)
+        bayes_eval.add(self.datasets)
+        bayes_eval.project_onto(G)
+        with expected_behavior:
+            bayes_eval._calculate_grid_extent()
