@@ -5,8 +5,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #
 import logging
-from my_code_base.linalg import inv
+from my_code_base.linalg import inv, empirical_covariance
 import numpy as np
+from scipy.stats import multivariate_normal
 
 
 log = logging.getLogger(__name__)
@@ -17,6 +18,7 @@ class BayesEval:
     def __init__(self):
         self._original_data = {}
         self._projected_data = {}
+        self._distributions = {}
 
     def add(self, *args, **kwargs):
         if args and isinstance(args[0], dict):
@@ -30,3 +32,18 @@ class BayesEval:
         G = guess_matrix
         P = inv(G.T.dot(G)).dot(G.T)
         self._projected_data = {k:P.dot(x) for (k,x) in self._original_data.items()}
+
+    def gdf(self):
+        """Fit a Gaussian normal distribution to the projected datasets."""
+        parameters = {
+            id: {
+                'µ': np.mean(x, axis=1),
+                'Σ': empirical_covariance(x)
+            }
+            for (id,x) in self._projected_data.items()
+        }
+        self._distributions = {
+            id: multivariate_normal(mean=params['µ'], cov=params['Σ'])
+            for (id, params) in parameters.items()
+        }
+
