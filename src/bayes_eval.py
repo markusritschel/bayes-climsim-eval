@@ -21,6 +21,7 @@ class BayesEval:
         self._projected_data = {}
         self._distributions = {}
         self._obs_cov = np.array(0)
+        self._projected_obs_cov = np.array(0)
         self.grid = None
         self._pos = None
 
@@ -36,13 +37,15 @@ class BayesEval:
         G = guess_matrix
         P = inv(G.T.dot(G)).dot(G.T)
         self._projected_data = {k:P.dot(x) for (k,x) in self._original_data.items()}
+        if np.any(self.obs_uncertainty):
+            self._projected_obs_cov = P.dot(self.obs_uncertainty).dot(P.T)
 
     def gdf(self):
         """Fit a Gaussian normal distribution to the projected datasets."""
         parameters = {
             id: {
                 'µ': np.mean(x, axis=1),
-                'Σ': empirical_covariance(x) + self._obs_cov
+                'Σ': empirical_covariance(x) + self._projected_obs_cov
             }
             for (id,x) in self._projected_data.items()
         }
@@ -68,7 +71,7 @@ class BayesEval:
             Σ = empirical_covariance(x)
             if µ.size > 2:
                 raise ValueError("Cannot calculate grid extent for dimensions higher than 2.")
-            rv_dict[k] = multivariate_normal(mean=µ, cov=Σ + self._obs_cov)
+            rv_dict[k] = multivariate_normal(mean=µ, cov=Σ + self._projected_obs_cov)
 
         minmax_df = calculate_axis_extent(rv_dict, **kwargs)
         self.grid = np.mgrid[[slice(min_,max_,500j) for (min_,max_) in minmax_df.values]]
