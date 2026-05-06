@@ -1,6 +1,6 @@
 {
   "template": "https://github.com/markusritschel/cookiecutter-pysci-project",
-  "commit": "9c9f901da14532d1fcbabb33cb9dd4f884a90603",
+  "commit": "c6838fba78d35c5a9bcf6a045f44b42556a5d544",
   "checkout": null,
   "context": {
     "cookiecutter": {
