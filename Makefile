@@ -7,20 +7,20 @@
 # Document any rules by adding a single line starting with ## right before the rule (see examples below)
 # ======================================================================================================
 
-include .env
+# If you have an .env file
+# include .env
 
 
-.PHONY: cleanup clean-jupyter-book clean-pyc, clean-logs, docs, book, save-requirements, requirements, src-available, conda-env, test-requirements, tests, clear-images, convert-images, figures, crop-pdf, crop-png, show-help
+
+.PHONY: cleanup clean-jupyter-book clean-pyc, clean-logs, documentation, book, save-requirements, requirements, src-available, conda-env, test-requirements, tests, clear-images, convert-images, figures, crop-pdf, crop-png, show-help
 
 ## Clean-up python artifacts, logs and jupyter-book built
-cleanup: clean-pyc clean-logs clean-jupyter-book clean-docs
+cleanup: clean-pyc clean-logs clean-docs clean-test-cov
 
-clean-jupyter-book:
-	jb clean --all docsrc/
-
+## Cleanup documentation built
 clean-docs:
-	jb clean --all reports/book/
-	rm -rf docsrc/build/*
+	rm -rf doc/_build/*
+	jb clean --all docs/
 
 # Remove Python file artifacts
 clean-pyc:
@@ -35,64 +35,85 @@ clean-logs:
 	find ./logs -iname '*.log' -type f -exec rm {} +
 
 
-## Build the code documentation with Sphinx
-docs:
-	$(MAKE) -C docsrc html
+## Remove coverage files
+clean-test-cov:
+	rm -rf htmlcov/
+
+## Build the code documentation with Jupyter-Book
+documentation:
+	uv run --group docs sphinx-build -b html docs/ docs/_build/html
 
 
-## Build the project's Jupyter-Book
-book:
-	jb build ./reports/book
+
+## Run linter
+lint:
+	uv run ruff check
 
 
-## Update the requirements.txt
+## Synchronize Jupyter notebooks according to the rules in pyproject.toml
+sync-notebooks:
+	jupytext --sync notebooks/**/*.ipynb
+
+
+## Update dependencies lock file
 save-requirements:
-	pip freeze > requirements.txt
+	uv lock
 
 
 ## Create a conda environment.yml file
 save-conda-env:
-	pip_packages=$$(conda env export | grep -A9999 ".*- pip:" | grep -v "^prefix: ") ;\
-	conda env export --from-history | grep -v "^prefix: " > environment.yml ;\
-	echo "$$pip_packages" >> environment.yml ;\
-	sed -ie 's/name: base/name: $(CONDA_DEFAULT_ENV)/g' environment.yml; \
-	echo "$$CONDA_DEFAULT_ENV"
+	@pip_packages=$$(conda env export | grep -A9999 ".*- pip:" | grep -v "^prefix: ") ;\
+	 conda env export --from-history | grep -v "^prefix: " > environment.yml;\
+	 echo "$$pip_packages" >> environment.yml ;\
+	 sed -i 's/name: base/name: $(CONDA_DEFAULT_ENV)/g' environment.yml
+	@echo exported \"$$CONDA_DEFAULT_ENV\" environment to environment.yml
 
 
+## Create a conda environment named 'bayes_climsim_eval', install packages, and activate it
+conda-env:
+	@echo "Create conda environment 'bayes_climsim_eval"
+	conda create --name bayes_climsim_eval python=3.10 --no-default-packages 
+	@echo "Activate conda environment 'bayes_climsim_eval'"
+	conda activate bayes_climsim_eval
 
-## Install Python Dependencies via pip
+
+## Set up a virtual environment with uv
+virtual-env:
+	@echo "Set up a virtual environment with uv"
+	uv sync --dev
+	uv lock
+
+
+## Install Python Dependencies
 install-requirements:
-	python -m pip install -U pip setuptools wheel
-	mamba install --file requirements.txt
-	pip install sphinxcontrib-napoleon2 rinohtype sphinx-rtd-theme sphinx-autodoc-defaultargs nbsphinx myst-parser sphinx-issues sphinxcontrib-bibtex
-	# python -m pip install -r requirements.txt
+	@echo "Install required packages into current environment"
+	uv sync --all-extras
+
+## Install requirements for building the docs
+install-doc-requirements:
+	uv sync --groups docs
 
 
 ## Make the source code as package available
 src-available:
-	python setup.py develop
+	pip install -e .
 
 
-## Create a conda environment named after the project slug, install packages, and activate it
-setup-conda-env:
-	@echo "Install mamba"
-	conda install -c conda-forge mamba
-	@echo "Create conda environment 'bayes-climsim-eval'"
-	mamba env create --file environment.yml
-	@echo "Activate conda environment 'bayes-climsim-eval'"
-	conda activate bayes-climsim-eval
-
-
-## Check if all packages listed in requirements.txt are installed in the current environment
+## Check if all packages listed in pyproject.toml are installed in the current environment
 test-requirements:
-	@echo "Check if all packages listed in requirements.txt are installed in the current environment:"
-	# the "|| true" prevents the command returning an error if grep does not find a match
-	python -m pip -vvv freeze -r requirements.txt | grep "not installed" || true
+	@echo "Check if all packages listed in pyproject.toml are installed in the current environment:"
+	uv sync --all-extras --dry-run
 
 
 ## Run pytest for the source code
 tests: test-requirements
-	pytest src/tests/ --doctest-modules -v
+	uv run pytest -v
+
+
+## Test github actions locally
+test-gh-actions:
+	mkdir -p /tmp/artifacts
+	act push --artifact-server-path /tmp/artifacts --container-options "--userns host" --action-offline-mode
 
 
 .SUFFIXES: .jpg .jpeg .png .pdf
