@@ -47,7 +47,7 @@ def plot_decision_probabilities(degrees: tuple, gamma=None):
     o = obs.to_dataframe()['tas_mean']
 
     G = legendre_polynomials(degrees=degrees, index=o.index)
-    P = my_code_base.linalg.inv((G.T.dot(G))).dot(G.T)
+    P = my_code_base.linalg.inv(G.T @ G) @ G.T
     µ_obs = P.dot(o)
 
     datasets = {}
