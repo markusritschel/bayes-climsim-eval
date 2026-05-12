@@ -11,10 +11,10 @@ from scipy.stats import multivariate_normal
 import numpy as np
 import xarray as xr
 import my_code_base.linalg
-from src.bayes import find_decision_bnds, find_decision_surfaces
-from src.bayes_eval import BayesEval
-from src.data_projection import legendre_polynomials
-from src import *
+from bayes_climsim_eval.bayes import find_decision_bnds, find_decision_surfaces
+from bayes_climsim_eval.bayes_eval import BayesEval
+from bayes_climsim_eval.data_projection import legendre_polynomials
+from bayes_climsim_eval import *
 
 log = setup_logger()
 

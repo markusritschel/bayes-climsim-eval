@@ -6,6 +6,7 @@
 #
 import logging
 import numpy as np
+import pandas as pd
 
 
 log = logging.getLogger(__name__)

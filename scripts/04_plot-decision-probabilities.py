@@ -9,11 +9,11 @@ import logging
 import fire
 from matplotlib import pyplot as plt
 import matplotlib.colors as mcolors
-import my_code_base
+import my_code_base.linalg
 import xarray as xr
-from src import *
-from src.bayes_eval import BayesEval
-from src.data_projection import legendre_polynomials
+from bayes_climsim_eval.bayes_eval import BayesEval
+from bayes_climsim_eval.data_projection import legendre_polynomials
+from bayes_climsim_eval import *
 
 log = setup_logger()
 

@@ -10,7 +10,7 @@ from my_code_base.linalg import inv, empirical_covariance
 import numpy as np
 from scipy.stats import multivariate_normal
 
-from src.bayes import calculate_axis_extent
+from bayes_climsim_eval.bayes import calculate_axis_extent
 
 log = logging.getLogger(__name__)
 

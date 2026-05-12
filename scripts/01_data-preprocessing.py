@@ -1,9 +1,9 @@
 # %%
-from src import *
+from bayes_climsim_eval import *
 import fire
 from dask import delayed
 from pathlib import Path
-from my_code_base.core.xarray import compress_xarray
+from my_code_base.core.xarray_utils import compress_xarray
 from my_code_base.esd.utils import compute_weighted_mean
 import pandas as pd
 import re
@@ -14,7 +14,7 @@ from tqdm.auto import tqdm
 import intake
 
 
-from src import setup_logger
+from bayes_climsim_eval import setup_logger
 log = setup_logger()
 
 
@@ -93,7 +93,8 @@ def regrid(ds_in, regrid_to, method='bilinear'):
 
     """Modify a dictionary holding a xarray.Dataset with piControl data by splitting it into sequences of length `periods` with an overlap of half the length."""
 def split_picontrol(d: dict, periods=126, freq='1MS'):
-    """Split the input dictionary of datasets into multiple ensemble members.
+    """Split the datasets of the input dictionary into multiple ensemble members by creating
+    sequences of length `periods` with an overlap of half the length.
 
     Parameters
     ----------

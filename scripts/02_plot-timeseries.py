@@ -19,8 +19,8 @@ import xarray as xr
 import matplotlib.pyplot as plt
 from my_code_base.stats.timeseries import weighted_annual_mean
 from my_code_base.linalg import inv
-from src.data_projection import legendre_polynomials
-from src import *
+from bayes_climsim_eval.data_projection import legendre_polynomials
+from bayes_climsim_eval import *
 
 log = setup_logger()
 
