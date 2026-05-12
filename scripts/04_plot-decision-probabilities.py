@@ -28,6 +28,21 @@ EXPERIMENT_IDs = ['historical', 'historicalGHG', 'historicalNat', 'piControl']
 
 
 def plot_decision_probabilities(degrees: tuple, gamma=None):
+    """Plot decision probabilities for climate model experiments.
+
+    Parameters
+    ----------
+    degrees : tuple
+        Degrees of Legendre polynomials to use for projection.
+    gamma : float, optional
+        Scaling factor for observation uncertainty. If provided, scales the
+        piControl covariance to set obs_uncertainty. Default is None.
+
+    Returns
+    -------
+    None
+        Saves the plot to PLOT_DIR.
+    """
     obs = xr.open_dataset(DATA_DIR/f"processed/observations_1880-2005.nc")
     o = obs.to_dataframe()['tas_mean']
 

@@ -128,6 +128,20 @@ def split_picontrol(d: dict, periods=126, freq='1MS'):
 
 
 def mask_with_observations(ds, da_obs: xr.DataArray):
+    """Mask dataset with observations by removing values where observations are null.
+
+    Parameters
+    ----------
+    ds: xarray.Dataset
+        The dataset to be masked.
+    da_obs: xarray.DataArray
+        The observations data array used for masking.
+
+    Returns
+    -------
+    xarray.Dataset
+        The masked dataset.
+    """
     log.info("Mask data with observations")
     return ds.where(~da_obs.isnull())
 
