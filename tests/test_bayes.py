@@ -10,9 +10,9 @@ import numpy as np
 import pandas as pd
 import scipy
 from scipy.stats import multivariate_normal
-from src.bayes import calculate_axis_extent
-from src.bayes_eval import BayesEval
-from src.data_projection import legendre_polynomials
+from bayes_climsim_eval.bayes import calculate_axis_extent
+from bayes_climsim_eval.bayes_eval import BayesEval
+from bayes_climsim_eval.data_projection import legendre_polynomials
 
 
 def test_calculate_axis_extent_2d():
