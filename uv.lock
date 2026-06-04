@@ -2884,15 +2884,15 @@ wheels = [
 
 [[package]]
 name = "mystmd"
-version = "1.9.1"
+version = "1.10.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "nodeenv" },
     { name = "platformdirs" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/60/b7/97919f4e152ddb171f13f2453e34d77096ffe09bc3cd1ac9bd4ff3f5855d/mystmd-1.9.1.tar.gz", hash = "sha256:cfc79e6d2ca135f9507dc46b5a2a97cc48bff71165a3116ca0925bb60941f0a3", size = 2979312, upload-time = "2026-05-20T01:46:39.753Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/81/33/1b2a98a936d68147c4392b94b53f8789a36acdd86b183544063995157a38/mystmd-1.10.0.tar.gz", hash = "sha256:0e1576ed6363ee2ee4924e65fc22f2c9e6d92e23e8d7d1c44429823d765cb74e", size = 2981869, upload-time = "2026-06-04T18:32:00.121Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/bd/20/ee2996179452e9538008c3c465875a1459d03fa5afa5c7c42d2869489997/mystmd-1.9.1-py3-none-any.whl", hash = "sha256:9d83aae5d8df86a24403574fb44b7dcaebf7fe7c4508c19f53c6d7e1a6cf972b", size = 3011015, upload-time = "2026-05-20T01:46:37.728Z" },
+    { url = "https://files.pythonhosted.org/packages/3e/39/321f6ab0d130fdeed0f690d0697460a81df74b25d813cbaace84a122bb47/mystmd-1.10.0-py3-none-any.whl", hash = "sha256:29cefcfe612694dd80c54ba915db25768eab77053a220fe54c6246dad15dfb0f", size = 3013527, upload-time = "2026-06-04T18:31:58.341Z" },
 ]
 
 [[package]]
@@ -4659,11 +4659,10 @@ wheels = [
 
 [[package]]
 name = "safety"
-version = "3.8.0"
+version = "3.7.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "authlib" },
-    { name = "certifi" },
     { name = "click" },
     { name = "dparse" },
     { name = "filelock" },
@@ -4673,18 +4672,18 @@ dependencies = [
     { name = "nltk" },
     { name = "packaging" },
     { name = "pydantic" },
+    { name = "requests" },
     { name = "ruamel-yaml" },
     { name = "safety-schemas" },
     { name = "tenacity" },
     { name = "tomli", marker = "python_full_version < '3.11'" },
     { name = "tomlkit" },
-    { name = "truststore" },
     { name = "typer" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c0/3c/7252c05d15e64c2714a72ca80d0a5cb8d08c0ee24fe8224d507558af15a4/safety-3.8.0.tar.gz", hash = "sha256:24b2cd7b873ee0dd4bc7f4f65933d2bfaf7041741f371449c12b5c8572ccb727", size = 412641, upload-time = "2026-05-26T18:24:55.435Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6f/e8/1cfffa0d8836de8aa31f4fa7fdeb892c7cfa97cd555039ad5df71ce0e968/safety-3.7.0.tar.gz", hash = "sha256:daec15a393cafc32b846b7ef93f9c952a1708863e242341ab5bde2e4beabb54e", size = 330538, upload-time = "2025-11-06T20:10:15.067Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/43/7a/27092087c895d1101b4e62549e9bb426e033ca8ef79dea5fcc303e11da36/safety-3.8.0-py3-none-any.whl", hash = "sha256:76f38519e34c5dfb728e9324b128b54b452c69b2accb9594f29fcb0d4d3fee2f", size = 340418, upload-time = "2026-05-26T18:24:53.924Z" },
+    { url = "https://files.pythonhosted.org/packages/89/55/c4b2058ca346e58124ba082a3596e30dc1f5793710f8173156c7c2d77048/safety-3.7.0-py3-none-any.whl", hash = "sha256:65e71db45eb832e8840e3456333d44c23927423753d5610596a09e909a66d2bf", size = 312436, upload-time = "2025-11-06T20:10:13.576Z" },
 ]
 
 [[package]]
@@ -5616,15 +5615,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/1b/22/40f55b26baeab80c2d7b3f1db0682f8954e4617fee7d90ce634022ef05c6/traitlets-5.15.0.tar.gz", hash = "sha256:4fead733f81cf1c4c938e06f8ca4633896833c9d89eff878159457f4d4392971", size = 163197, upload-time = "2026-05-06T08:05:58.016Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/da/98/a9937a969d018a23badfea0b381f66783649d48e0ea6c41923265c3cbeb3/traitlets-5.15.0-py3-none-any.whl", hash = "sha256:fb36a18867a6803deab09f3c5e0fa81bb7b26a5c9e82501c9933f759166eff40", size = 85877, upload-time = "2026-05-06T08:05:55.853Z" },
-]
-
-[[package]]
-name = "truststore"
-version = "0.10.4"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/53/a3/1585216310e344e8102c22482f6060c7a6ea0322b63e026372e6dcefcfd6/truststore-0.10.4.tar.gz", hash = "sha256:9d91bd436463ad5e4ee4aba766628dd6cd7010cf3e2461756b3303710eebc301", size = 26169, upload-time = "2025-08-12T18:49:02.73Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/19/97/56608b2249fe206a67cd573bc93cd9896e1efb9e98bce9c163bcdc704b88/truststore-0.10.4-py3-none-any.whl", hash = "sha256:adaeaecf1cbb5f4de3b1959b42d41f6fab57b2b1666adb59e89cb0b53361d981", size = 18660, upload-time = "2025-08-12T18:49:01.46Z" },
 ]
 
 [[package]]
